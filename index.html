@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Curricular Ingeniería Química – UTN BA</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f4f4; margin: 20px; }
+    h1 { text-align: center; }
+    .anio { padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; }
+    .materia {
+      display: block;
+      margin: 5px 0;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+    .materia.aprobada { background: #c8e6c9; text-decoration: line-through; color: #333; }
+    .materia.bloqueada { background: #eee; color: #999; cursor: not-allowed; border: 1px dashed #bbb; }
+    .anio1 { background-color: #e3f2fd; }
+    .anio2 { background-color: #e8f5e9; }
+    .anio3 { background-color: #fff3e0; }
+    .anio4 { background-color: #fce4ec; }
+    .anio5 { background-color: #ede7f6; }
+    .anio h2 { margin-top: 0; }
+  </style>
+</head>
+<body>
+
+<h1>Malla Curricular Interactiva – Ing. Química UTN-BA</h1>
+
+<div id="malla"></div>
+
+<script>
+const materias = [
+  // Año 1
+  { nombre: "Ingeniería y Sociedad", anio: 1 },
+  { nombre: "Álgebra y Geometría Analítica", anio: 1 },
+  { nombre: "Análisis Matemático I", anio: 1 },
+  { nombre: "Sistemas de Representación", anio: 1 },
+  { nombre: "Fundamentos de Informática", anio: 1 },
+  { nombre: "Introducción a Ingeniería Química", anio: 1 },
+  { nombre: "Química", anio: 1 },
+  { nombre: "Inglés Técnico Nivel I", anio: 1 },
+  { nombre: "Análisis Matemático II", anio: 1, correlativas: ["Álgebra y Geometría Analítica", "Análisis Matemático I"] },
+
+  // Año 2
+  { nombre: "Probabilidad y Estadística", anio: 2, correlativas: ["Álgebra y Geometría Analítica", "Análisis Matemático I"] },
+  { nombre: "Química Inorgánica", anio: 2, correlativas: ["Química"] },
+  { nombre: "Física I", anio: 2 },
+  { nombre: "Física II", anio: 2, correlativas: ["Análisis Matemático II", "Física I"] },
+  { nombre: "Química Orgánica", anio: 2, correlativas: ["Química"] },
+  { nombre: "Introducción a Equipos y Procesos", anio: 2, correlativas: ["Introducción a Ingeniería Química", "Química"] },
+  { nombre: "Inglés Técnico Nivel II", anio: 2, correlativas: ["Inglés Técnico Nivel I"] },
+  { nombre: "Matemática Superior Aplicada", anio: 2, correlativas: ["Álgebra y Geometría Analítica", "Análisis Matemático I", "Análisis Matemático II"] },
+
+  // Año 3
+  { nombre: "Balances de Masa y Energía", anio: 3, correlativas: ["Química", "Sistemas de Representación", "Fundamentos de Informática", "Introducción a Equipos y Procesos", "Física II", "Introducción a Ingeniería Química", "Álgebra y Geometría Analítica", "Análisis Matemático I"] },
+  { nombre: "Termodinámica", anio: 3, correlativas: ["Química Inorgánica", "Física II", "Análisis Matemático I", "Química", "Análisis Matemático II"] },
+  { nombre: "Ciencia de los Materiales", anio: 3, correlativas: ["Introducción a Equipos y Procesos", "Química Inorgánica", "Química Orgánica", "Introducción a Ingeniería Química", "Química"] },
+  { nombre: "Fisicoquímica", anio: 3, correlativas: ["Introducción a Equipos y Procesos", "Física II", "Álgebra y Geometría Analítica", "Análisis Matemático I", "Química", "Análisis Matemático II"] },
+  { nombre: "Fenómenos de Transporte", anio: 3, correlativas: ["Introducción a Equipos y Procesos", "Física II", "Álgebra y Geometría Analítica", "Análisis Matemático I", "Química", "Análisis Matemático II"] },
+  { nombre: "Química Analítica", anio: 3, correlativas: ["Probabilidad y Estadística", "Química Inorgánica", "Química Orgánica", "Ingeniería y Sociedad", "Química"] },
+  { nombre: "Microbiología y Química Biológica", anio: 3, correlativas: ["Química Inorgánica", "Química Orgánica", "Química"] },
+  { nombre: "Química Aplicada", anio: 3, correlativas: ["Introducción a Equipos y Procesos", "Química Inorgánica", "Química Orgánica", "Introducción a Ingeniería Química", "Química", "Física II", "Ingeniería y Sociedad", "Inglés Técnico Nivel I"] },
+  { nombre: "Economía", anio: 3, correlativas: ["Introducción a Equipos y Procesos", "Ingeniería y Sociedad", "Álgebra y Geometría Analítica"] },
+  { nombre: "Legislación", anio: 3, correlativas: ["Ingeniería y Sociedad", "Introducción a Ingeniería Química"] },
+
+  // Año 4
+  { nombre: "Diseño, Simulación, Optimización y Seguridad de Procesos", anio: 4, correlativas: ["Balances de Masa y Energía", "Sistemas de Representación", "Fundamentos de Informática", "Introducción a Equipos y Procesos", "Matemática Superior Aplicada", "Análisis Matemático II", "Inglés Técnico Nivel II"] },
+  { nombre: "Operaciones Unitarias I", anio: 4, correlativas: ["Balances de Masa y Energía", "Termodinámica", "Fenómenos de Transporte", "Introducción a Equipos y Procesos", "Física II", "Análisis Matemático II"] },
+  { nombre: "Tecnología de la Energía Térmica", anio: 4, correlativas: ["Balances de Masa y Energía", "Termodinámica", "Fenómenos de Transporte", "Introducción a Equipos y Procesos", "Física II", "Fisicoquímica", "Análisis Matemático II"] },
+  { nombre: "Operaciones Unitarias II", anio: 4, correlativas: ["Termodinámica", "Fenómenos de Transporte", "Introducción a Equipos y Procesos", "Física II", "Fisicoquímica", "Química Orgánica", "Análisis Matemático II"] },
+  { nombre: "Ingeniería de las Reacciones Químicas", anio: 4, correlativas: ["Balances de Masa y Energía", "Termodinámica", "Fenómenos de Transporte", "Fisicoquímica", "Química Inorgánica", "Química Orgánica", "Análisis Matemático II"] },
+  { nombre: "Organización Industrial", anio: 4, correlativas: ["Probabilidad y Estadística", "Ingeniería y Sociedad", "Introducción a Equipos y Procesos", "Legislación"] },
+  { nombre: "Mecánica Industrial", anio: 4, correlativas: ["Introducción a Equipos y Procesos", "Fisicoquímica", "Química Inorgánica", "Ciencia de los Materiales", "Física I"] },
+
+  // Año 5
+  { nombre: "Control Automático de Procesos", anio: 5, correlativas: ["Diseño, Simulación, Optimización y Seguridad de Procesos", "Operaciones Unitarias II", "Balances de Masa y Energía", "Química Analítica", "Matemática Superior Aplicada"] },
+  { nombre: "Ingeniería Ambiental", anio: 5, correlativas: ["Química Aplicada", "Operaciones Unitarias I", "Operaciones Unitarias II", "Ingeniería de las Reacciones Químicas", "Balances de Masa y Energía", "Química Analítica", "Legislación"] },
+  { nombre: "Procesos Biotecnológicos", anio: 5, correlativas: ["Balances de Masa y Energía", "Fisicoquímica", "Fenómenos de Transporte", "Microbiología y Química Biológica", "Introducción a Equipos y Procesos", "Química Inorgánica", "Química Orgánica"] },
+  { nombre: "Higiene y Seguridad en el Trabajo", anio: 5, correlativas: ["Química Inorgánica", "Química Orgánica", "Balances de Masa y Energía", "Introducción a Equipos y Procesos"] },
+  { nombre: "Máquinas e Instalaciones Eléctricas", anio: 5, correlativas: ["Operaciones Unitarias I", "Introducción a Equipos y Procesos", "Física II"] },
+  { nombre: "Proyecto Final", anio: 5, correlativas: ["Diseño, Simulación, Optimización y Seguridad de Procesos", "Operaciones Unitarias I", "Tecnología de la Energía Térmica", "Operaciones Unitarias II", "Ingeniería de las Reacciones Químicas", "Organización Industrial", "Balances de Masa y Energía", "Fisicoquímica", "Fenómenos de Transporte", "Química Aplicada", "Economía"] },
+  { nombre: "Calidad y Control Estadístico de Procesos", anio: 5, correlativas: ["Probabilidad y Estadística", "Análisis Matemático I"] },
+];
+
+const mallaDiv = document.getElementById("malla");
+
+for (let anio = 1; anio <= 5; anio++) {
+  const contenedor = document.createElement("div");
+  contenedor.className = `anio anio${anio}`;
+  const titulo = document.createElement("h2");
+  titulo.textContent = `${anio}° Año`;
+  contenedor.appendChild(titulo);
+
+  materias
+    .filter(m => m.anio === anio)
+    .forEach(m => {
+      const div = document.createElement("div");
+      div.textContent = m.nombre;
+      div.className = "materia bloqueada";
+      div.onclick = () => {
+        if (div.classList.contains("bloqueada")) return;
+        div.classList.toggle("aprobada");
+        actualizarEstado();
+      };
+      m.elemento = div;
+      contenedor.appendChild(div);
+    });
+
+  mallaDiv.appendChild(contenedor);
+}
+
+function actualizarEstado() {
+  materias.forEach(m => {
+    if (!m.correlativas || m.correlativas.length === 0) {
+      m.elemento.classList.remove("bloqueada");
+    } else {
+      const aprobadas = m.correlativas.every(cor =>
+        materias.find(mm => mm.nombre === cor)?.elemento.classList.contains("aprobada")
+      );
+      m.elemento.classList.toggle("bloqueada", !aprobadas);
+    }
+  });
+}
+actualizarEstado();
+</script>
+
+</body>
+</html>
